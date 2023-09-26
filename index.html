@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+    <script type="text/javascript" src="config.js"></script>
+</head>
+
+<body>
+    <div id="imports">&nbsp;</div>
+
+    <script type="text/javascript">
+        $(function(){
+            $("#imports").load("imports.html");
+        });
+    </script>
+
+    <!-- Rest of body goes here -->
+    <div class="container col-xl-10 col-xxl-8 px-4 py-5">
+        <div class="row align-items-center g-lg-5 py-5">
+          <div class="col-lg-7 text-center text-lg-start">
+            <h1 class="display-4 fw-bold lh-1 text-body-emphasis mb-3">Roll for initiative!</h1>
+            <p class="col-lg-10 fs-4">Welcome to VacDnD, the last DnD website we're ever going to need. 
+                If you're wondering who 'we' refers to, you're probably not in said group. Sorry! To 
+                avoid any copyright violations, the wiki is closed to the public. 
+                <span style="text-decoration: line-through">To use the wiki tools, make sure to log in 
+                first with your FTP credentials.</span> (feature coming soon) </p>
+          </div>
+          <div class="col-md-10 mx-auto col-lg-5">
+            <form class="p-4 p-md-5 border rounded-3 bg-body-tertiary">
+              <div class="form-floating mb-3">
+                <input type="email" class="form-control" id="usernameInput" name="username" placeholder="name@example.com" autocomplete="on" style="cursor: text;">
+                <label for="usernameInput">Username</label>
+              </div>
+              <div class="form-floating mb-3">
+                <input type="password" class="form-control" id="passwordInput" name="password" placeholder="Password" autocomplete="on" style="cursor: text;">
+                <label for="passwordInput">Password</label>
+              </div>
+              <div class="checkbox mb-3">
+                <label>
+                  <input type="checkbox" value="remember-me" checked disabled> Remember me
+                </label>
+              </div>
+              <button class="w-100 btn btn-lg btn-primary" onclick="loginUser()">Login</button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+    <div class="container">
+        <div class="row row-cols-1 row-cols-lg-3 g-4">
+            <div class="col">
+            <div class="card h-100">
+                <img src="./Images/magic_book.jpg" class="card-img-top">
+                <div class="card-body">
+                    <h5 class="card-title">Wiki <i class="ra ra-scroll-unfurled"></i></h5>
+                    <p class="card-text">Explore our personal wiki, from OG books to the most recent kickstarter!</p>
+                </div>
+                <div class="card-footer d-grid">
+                    <a href="https://www.vacdnd.com/wiki" type="button" class="btn btn-primary">Open Wiki</a>
+                </div>
+            </div>
+            </div>
+            <div class="col">
+            <div class="card h-100">
+                <img src="./Images/magic_tools.jpg" class="card-img-top">
+                <div class="card-body">
+                    <h5 class="card-title">Tools <i class="ra ra-wrench"></i></h5>
+                    <p class="card-text">Some handy utilities to help fill the wiki faster.</p>
+                </div>
+                <div class="card-footer d-grid">
+                  <a href="./tools.html" class="btn btn-primary">Open Tools</a>
+                </div>
+            </div>
+            </div>
+            <div class="col">
+            <div class="card h-100">
+                <img src="./Images/combat.jpg" class="card-img-top">
+                <div class="card-body">
+                    <h5 class="card-title">Combat <i class="ra ra-monster-skull"></i></h5>
+                    <p class="card-text">Create and save parties or encounters and play them with HP and initiative tracking.</p>
+                </div>
+                <div class="card-footer d-grid">
+                  <a href="#" class="btn btn-primary disabled"><b style="color: darkred">UNDER CONSTRUCTION</b> </a>
+                </div>
+            </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4" style="border-top: 1px solid #b50d0d">
+          <div class="col-md-4 d-flex align-items-center">
+            <span class="mb-3 mb-md-0 text-body-secondary">© 2023 VaC</span>
+          </div>
+        </footer>
+    </div>
+
+    <!-- Other JS goes here -->
+    <script>
+        async function loginUser() {
+
+            var user = {};
+            user.username = document.getElementById("usernameInput").value;
+            user.password = document.getElementById("passwordInput").value;
+
+            console.log(user);
+
+            try {
+                var response = await fetch(url + "userAuth", {
+                    method:"POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(user),
+                });
+
+                var result = await response;
+                if (result.status == 200) {
+                    alert("user data was sent");
+                } else {
+                    alert("Unknown problem when sending login data. Contact system admin.");
+                }
+            } catch (error) {
+                console.error("Error: ", error);
+                alert("An error occured: ", error);
+            }
+        }
+
+    </script>
+</body>
+
+</html>

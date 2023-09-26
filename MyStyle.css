@@ -1,0 +1,85 @@
+/* NOTES */
+/* font suggestion headers: ysabeau infant*/
+
+/* RED-AND-BEIGE light theme*/
+/* https://realtimecolors.com/?colors=050505-fafafa-b9275f-f6e9d5-d42b6c */
+
+/* muted browns */
+/* https://realtimecolors.com/?colors=020203-eaecf0-ada08a-dee0d2-87635e */
+
+/* BOLD browns */
+/* https://realtimecolors.com/?colors=0e060a-f4e6ed-5c2829-e6d6c6-9c6f44 */
+
+/* RED-BROWN light theme*/
+/* https://realtimecolors.com/?colors=2b0317-fde2f0-b50d0d-f8cca0-bf660d */
+
+
+
+/* GENERAL */
+
+:root {
+    --text: #2b0317;
+    --background: #fde2e8;
+    --primary: #b50d0d;
+    --secondary: #f8cca0;
+    --secondary-darker: #dfa973;
+    --accent: #bf660d;
+}
+
+body {
+    background-color: var(--background);
+}
+
+body, html {
+    height: 100%
+}
+
+.code {
+    font-family: monospace;
+    background-color: lightgray;
+}
+
+/* INDEX.HTML ELEMETNS */
+.btn-frontpage-large {
+    --bs-btn-bg: var(--secondary);
+    --bs-btn-hover-bg: var(--secondary-darker);
+    --bs-btn-border-color: var(--accent);
+    --bs-btn-hover-border-color: var(--accent);
+    --bs-btn-border-weight: 3px;
+}
+
+.container-narrow {
+    margin-right: auto;
+    margin-left: auto;
+    width: 70%;
+}
+
+.large-pad {
+    padding-top: 200px;
+    padding-bottom: 200px;
+}
+
+/* NAVBAR ELEMENTS */
+.navbar {
+    background-color: var(--primary) !important;
+}
+
+.navbar .navbar-brand {
+    color: white;
+}
+
+.navbar .nav-link{
+    color: white !important;
+}
+
+.dropdown-menu{
+    background-color: var(--background);
+    
+}
+
+/* TABLE FORMATTER */
+#codeBlockContainer {
+    border: 1px solid black;
+    background-color: white;
+    font-family: "Courier New", monospace;
+}

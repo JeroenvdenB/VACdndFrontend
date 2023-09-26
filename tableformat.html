@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+    <script type="text/javascript" src="config.js"></script>
+</head>
+
+<body>
+    <div id="imports">&nbsp;</div>
+
+    <script type="text/javascript">
+        $(function(){
+            $("#imports").load("imports.html");
+        });
+    </script>
+
+    <!-- Rest of body goes here -->
+    <div class="container py-3">
+        <div class="row">
+            <div class="col-12 border-bottom border-dark">
+                <h1>Table Formatting</h1>
+                <p>To make filling the wiki easier, you can copy-paste tables 
+                    from wikidot into a format that our own wiki can understand.
+                    Copy the table and paste whatever that gives you into the box. 
+                    The code that comes out can be copy-pasted into our wiki 
+                    editor to recreate the table.
+                </p>
+                <ul>
+                    <li>Only the first line is treated as a header. If there 
+                        is more than one header, add it manually in the wiki editor.
+                    </li>
+                    <li>Any links need to be manually added. The converter only gives back plain text.</li>
+                </ul>
+            </div>
+            <div class="col-12 col-lg-6 py-3">
+                <label for="textInput" class="form-label">Enter the copy-pasted table and click 'Format'. The first row is always treated as the header.</label>
+                <textarea class="form-control" rows="8" id="textInput"></textarea>
+            </div>
+            <div class="col-12 col-lg-6 my-3" id="codeBlockContainer">
+                <p id="codeBlock">&nbsp;</p>
+            </div>
+            <div class="col-12 lg-6 py-3">
+                <button type="button" class="btn btn-primary" id="sendTextInput" onclick="Format()">Format</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4" style="border-top: 1px solid #b50d0d">
+            <div class="col-md-4 d-flex align-items-center">
+                <span class="mb-3 mb-md-0 text-body-secondary">© 2023 VaC</span>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Other JS goes here -->
+    <script>
+        function Format(){
+            var input = document.getElementById("textInput").value;
+            var header = input.substring(0, input.indexOf("\n"));
+            var table = input.substring(input.indexOf("\n")+1);
+            var niceTable;
+            
+            header = "^" + header.replaceAll("\t","^") + " ^\n";
+
+            niceTable = table.replaceAll("\t", "|");
+            niceTable = niceTable.replaceAll("\n", "|\n|");
+            niceTable = "|" + niceTable + "|";
+
+            document.getElementById("codeBlock").innerText = header+niceTable;
+        }
+    </script>
+</body>
+
+</html>

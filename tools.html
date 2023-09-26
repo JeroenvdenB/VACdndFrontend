@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+    <script type="text/javascript" src="config.js"></script>
+</head>
+
+<body>
+    <div id="imports">&nbsp;</div>
+
+    <script type="text/javascript">
+        $(function(){
+            $("#imports").load("imports.html");
+        });
+    </script>
+
+    <!-- Rest of body goes here -->
+    <div class="container py-4">
+        <div class="row">
+            <div class="col-12 col-lg-2 d-grid py-1">
+                <a href="./tableformat.html" type="button" class="btn btn-primary"> Table formatting</a>
+            </div>
+            <div class="col-12 col-lg-10">
+                <p>For directly copy-pasting tables and formtting it to an accepted dokuwiki format.</p>
+            </div>
+            <div class="col-12 col-lg-2 d-grid py-1">
+                <a href="./spells.html" type="button" class="btn btn-primary"> Add spell</a>
+            </div>
+            <div class="col-12 col-lg-10">
+                <p>Enter the spell data in a nice form to automagically incorporate it into the wiki.</p>
+            </div>
+            <div class="col-12 col-lg-2 d-grid py-1">
+                <a href="./items.html" type="button" class="btn btn-primary">Add magic item</a>
+            </div>
+            <div class="col-12 col-lg-10">
+                <p>Add Wondrous/Named items.</p>
+            </div>
+            <div class="col-12 col-lg-2 d-grid py-1">
+                <button type="button" class="btn btn-primary" disabled>Item table generator</button>
+            </div>
+            <div class="col-12 col-lg-10">
+                <p>Coming less soon: adding item tables</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row py-2">
+            <div class="col">
+                <h2>Style Summary</h2>
+                <ul>
+                    <li>Adhere to name groups. Click on 'sitemap' 
+                        upper right to see what goes where.</li>
+                    <li>Create a new page by linking to it in the wiki editor.
+                        A red link will appear, leading you to the new page.
+                    </li>
+                    <li>DO NOT manually add spells. Use the spell tool.</li>
+                    <li>The add spell page can be slow. Wait patiently after submitting
+                        for a popup. The page will send a message for succcess or failure.
+                    </li>
+                    <li>Page titles are H1 (heading 1), nothing else. Go down one
+                        step for each 'lower' heading after that.
+                    </li>
+                    <li>Add white lines between paragraps with <span class="code">\\</span> </li>
+                </ul>
+
+                <h3>Syntax Examples</h3>
+                <table class="table table-bordered table-sm">
+                    <tr>
+                        <td>Link to a class</td>
+                        <td><span class="code">[[Artificer]]</span></td>
+                    </tr>
+                    <tr>
+                        <td>Link to a spell</td>
+                        <td><span class="code">[[spell:Blade Ward | Blade Ward]]</span> </td>
+                    </tr>
+                    <tr>
+                        <td>Link to a spell list</td>
+                        <td><span class="code">[[spells:wizard:lvl0 | Wizard spell list]]</span> </td>
+                    </tr>
+                    <tr>
+                        <td>Link to an item</td>
+                        <td><span class="code">[[item:Bracers of Defense]]</span> </td>
+                    </tr>
+                    <tr>
+                        <td>Table header</td>
+                        <td><span class="code">^ First column header ^ second header ^</span> </td>
+                    </tr>
+                    <tr>
+                        <td>table Body</td>
+                        <td><span class="code">|First column item | second item |</span> </td>
+                    </tr>
+                    <tr>
+                        <td>Line-break</td>
+                        <td><span class="code">\\</span> </td>
+                    </tr>
+                </table>
+                <a href="https://vacdnd.com/wiki/doku.php?id=wiki:syntax#dokuwiki__top">Click here for a full explanation of the wiki syntax.</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row py-2">
+            <div class="col-12 col-lg-6">
+                <h2 id="styleGuideStart">Extended Style Guide</h2>
+                <h3>The wiki editor</h3>
+                <p>There is no button to add new pages. Instead, you add a page
+                    by creating a link to it.
+                </p>
+                <ol>
+                    <li>Go to the homepage;</li>
+                    <li>Click edit (page or section);</li>
+                    <li>Enter <span class="code">[[Your Page Name]]</span> and save; </li>
+                    <li>A red link now appears. Click the link and create the page.</li>
+                </ol>
+            </div>
+            <div class="col-12 col-lg-6">
+                <img src="./Images/page_creation.png" class="w-100">
+            </div>
+            <div class="col-12">
+                <p>Some oddities in the wiki editor:</p>
+                <ul>
+                    <li>Previous versions of spell pages are not available, because they are added externally. Internal edits get saved as different page versions that you can still access.</li>
+                    <li>There is no ‘delete’ button. To get rid of a page, remove all its content. Then remove any links to the page. You can easily see what pages link the your current by selecting ‘backlinks’, right under the edit button.</li>
+                    <li>Be mindful of the name group you put a page in.</li>
+                    <li>Page names are not case sensitive and spaces in the name are replaced by underscores. “Acid Splash” and “acid_splash” will link to the same thing</li>
+                </ul>
+            </div>
+            <div class="col-12">
+                <h3>Name groups</h3>
+                <p>Pages are ordered under name groups. This is literally the folder structure where all the page files are kept behind the scenes.</p>
+                <p>You can click on ‘sitemap’ (top right corner) to see the name groups and what they contain. When referring to
+                    a page, it's important to have the name group right, or the page won't be found.
+                </p>
+            </div>
+            <div class="col-12">
+                <table class="table table-sm table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Type of page</th>
+                            <th>Name group</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Spell</td>
+                            <td><span class="code">spell</span></td>
+                        </tr>
+                        <tr>
+                            <td>Class</td>
+                            <td>No name group</td>
+                        </tr>
+                        <tr>
+                            <td>Subclass</td>
+                            <td>Parent class (i.e.<span class="code">[[artificer:alchemist]]</span>)</td>
+                        </tr>
+                        <tr>
+                            <td>Lineage (= race)</td>
+                            <td> <span class="code">lineage</span> </td>
+                        </tr>
+                        <tr>
+                            <td>Item</td>
+                            <td> <span class="code">item</span> </td>
+                        </tr>
+                        <tr>
+                            <td>Feat</td>
+                            <td> <span class="code">feat</span> </td>
+                        </tr>
+                        <tr>
+                            <td>Item table</td>
+                            <td> <span class="code">itemtable</span> </td>
+                        </tr>
+                        <tr>
+                            <td>Link to spell list</td>
+                            <td>[[spell:class:level]], like so:
+                                <span class="code">[[spells:artificer:lvl0]]</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Link to a spell</td>
+                            <td>[[spell:name]], like so:
+                                <span class="code">[[spell:Acid Splash]]</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4" style="border-top: 1px solid #b50d0d">
+            <div class="col-md-4 d-flex align-items-center">
+                <span class="mb-3 mb-md-0 text-body-secondary">© 2023 VaC</span>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Other JS goes here -->
+</body>
+
+</html>

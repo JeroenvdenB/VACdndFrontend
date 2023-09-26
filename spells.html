@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+    <script type="text/javascript" src="config.js"></script>
+</head>
+
+<body>
+    <div id="imports">&nbsp;</div>
+
+    <script type="text/javascript">
+        $(function(){
+            $("#imports").load("imports.html");
+        });
+    </script>
+
+    <!-- Rest of body goes here -->
+
+
+<div class="container py-4">
+    <div class="row">
+        <div class="col-12">
+            <h1>Spellinator-9000</h1>
+
+            <div class="col-12 col-sm-2 d-grid">
+                <a class="btn btn-secondary my-3" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+                  Explanation
+                </a>
+            </div>
+                <div class="collapse" id="collapseExample">
+                    <div class="card card-body">
+                        <p>
+                            This form will add a spell to the wiki and update any 
+                            spell list it occurs in. If a desired source book is not
+                            yet in the list, send a request and I'll add it. If you're
+                            copying from wikidot, do not copy the bold or cursive stuff
+                            (like 'at higher levels'). Those headers are added 
+                            automagically.
+                        </p>
+                        <p>
+                            Did you make a mistake? You might be able to fix it by adding
+                            the spell again, with the mistake fixed. See the behavior 
+                            explained below. Otherwise, go to the wiki and fix it manually
+                            before you continue ;)
+                        </p>
+                        <p>Some notes about the behavior of the app:</p>
+                        <ul>
+                            <li>If you enter a spell name that already exists, the spell is 
+                                replaced. The name is case and space sensitive. All lists
+                                that the spell appears in will be updated.
+                            </li>
+                            <li>If you leave out the school or class, the form will yell at you.</li>
+                            <li>If you leave 'higher levels' empty, the code behind all this
+                                becomes mad at you. If there are no higher levels, enter "N/A".
+                            </li>
+                            <li>
+                                The page may take a while after you submit the spell. Wait for a popup.
+                                I'm working on a loading screen.
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12 py-3">
+            <form action="">
+                <div class="mb-3">
+                    <label for="spellName" class="form-label">Spell name</label>
+                    <input type="text" class="form-control" id="spellName" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="source" class="form-label">Source material</label>
+                    <select class="form-select" id="source">
+                    </select>
+                </div>
+
+                <div id="magicSchoolRadios" oninput="toggleCustomSchool()"></div>
+                <div class="mb-3">
+                    <label for="customSchoolText" class="form-label">Custom school of magic: </label>
+                    <span id="customSchoolField">
+                        <input class="form-control-inline" type="text" id="customSchoolText" disabled>
+                    </span>
+                </div>
+
+                <div class="mb-3">
+                    <label for="levelSelect" class="form-label">Spell level</label>
+                    <select class="form-select" id="levelSelect">
+                        <option value="0" selected>Cantrip</option>
+                        <option>1</option>
+                        <option>2</option>
+                        <option>3</option>
+                        <option>4</option>
+                        <option>5</option>
+                        <option>6</option>
+                        <option>7</option>
+                        <option>8</option>
+                        <option>9</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label for="castingSelect" class="form-label">Casting time</label>
+                    <p> <em>Important: when using the custom field, use a comma early on (i.e.: 1 reaction, which ...). Anything before
+                        the comma is shown in the 'Casting Time' column of the spell tables.</em>
+                    </p>
+                    <select oninput="enableAltCastingTime()" class="form-select" id="castingSelect">
+                        <option selected>1 action</option>
+                        <option>1 bonus action</option>
+                        <option>1 reaction</option>
+                        <option>1 minute</option>
+                        <option>10 minutes</option>
+                        <option>1 hour</option>
+                        <option value="other">Other/custom options (enter below)</option>
+                    </select>
+                    <span id="altCastingTimeField"> <input type="text" class="form-control" id="altCastingTime" disabled> </span>
+                </div>
+
+                <div class="mb-3">
+                    <label for="range" class="form-label">Range</label>
+                    <input type="text" class="form-control" id="range" required>
+                </div>
+
+                <div class="mb-3 row">
+                    <label class="col-form-label">Components</label>
+                    <div class="col-12 col-md-1 my-2">
+                        <input class="form-check-input" type="checkbox" value="" id="V">
+                        <label class="form-check-label" for="V">V</label>
+                    </div>
+                    <div class="col-12 col-md-1 my-2">
+                        <input class="form-check-input" type="checkbox" value="" id="S">
+                        <label class="form-check-label" for="V">S</label>
+                    </div>
+                    <div class="col-12 col-md-1 my-2">
+                        <input class="form-check-input" type="checkbox" value="" id="M">
+                        <label class="form-check-label" for="V">M</label>
+                    </div>
+                    <div class="col-12 col-md-1">
+                        <label class="col-form-label" for="materialComponents">Materials: &nbsp;</label>
+                    </div>
+                    <div class="col-12 col-md-4">
+                        <input type="text" class="form-control" id="materialComponents">
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="duration" class="form-label">Spell duration</label>
+                    <input type="text" class="form-control" id="duration" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="description" class="form-label">Description</label>
+                    <textarea rows="5" class="form-control" id="description" required></textarea>
+                </div>
+
+                <div class="mb-3">
+                    <label for="higherLevels" class="form-label">At higher levels:</label>
+                    <input type="text" class="form-control" id="higherLevels" required>
+                </div>
+
+                <div id="schoolChecks"></div>
+                
+                <div class="mb-3">
+                    <label for="ritualSelect" class="form-label">Can the spell be cast as a Ritual?</label>
+                    <select class="form-select" id="ritualSelect">
+                        <option selected value="false">No </option>
+                        <option value="true">Yes </option>
+                    </select>
+                </div>
+            </form>
+        </div>
+
+        <div class="col-12 d-grid">
+            <button class="btn btn-primary" onclick="compileSpell()">Submit</button>
+        </div>
+
+    </div>
+</div>
+
+<div class="container">
+    <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4" style="border-top: 1px solid #b50d0d">
+        <div class="col-md-4 d-flex align-items-center">
+            <span class="mb-3 mb-md-0 text-body-secondary">© 2023 VaC</span>
+        </div>
+    </footer>
+</div>
+
+    <!-- Other JS goes here -->
+    <script type="text/javascript"></script>
+    <script>
+        function compileSpell() {
+            //Yes I know the form can send things. No, I can't figure it out for my endpoint.
+            //Especially not because there are optional fields (see if statements below). 
+            var spell = {};
+            spell.name = document.getElementById("spellName").value;
+            spell.school = $('input[name=schoolRadio]:checked').val();
+            if (spell.school == "customSchool") {
+                spell.school = document.getElementById("customSchoolText").value;
+            }
+            spell.source = document.getElementById("source").value;
+            spell.level = document.getElementById("levelSelect").value;
+            spell.castingTime = document.getElementById("castingSelect").value;
+            if (spell.castingTime == "other") {
+                spell.castingTime = document.getElementById("altCastingTime").value;
+            }
+            spell.range = document.getElementById("range").value;
+            spell.components = "";
+            if (document.getElementById("V").checked) {
+                spell.components += "V, ";
+            } if (document.getElementById("S").checked) {
+                spell.components += "S, ";
+            } if (document.getElementById("M").checked) {
+                var comp = document.getElementById("materialComponents").value;
+                spell.components += `M (${comp})`;
+            }
+            spell.duration = document.getElementById("duration").value;
+            spell.description = document.getElementById("description").value;
+            spell.higherLevels = document.getElementById("higherLevels").value;
+            spell.lists = getCheckedClasses();
+            spell.ritual = document.getElementById("ritualSelect").value;
+
+            sendSpell(spell);
+        }
+
+        async function sendSpell(spell) {
+        
+            try {
+                if (spell.lists == null) {
+                    throw "Select spell lists to add this spell to!"
+                } if (spell.school == undefined) {
+                    throw "Select a spell school!"
+                }
+
+                var response = await fetch(url + "addSpell", {
+                    method:"POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(spell),
+                });
+
+                var result = await response;
+                if (result.status == 200) {
+                    alert("Spell was successfully sent.");
+                    window.location.reload();
+                } else {
+                    alert("Unknown error when sending the spell. Contact system administrator.");
+                }
+            } catch (error) {
+                console.error("Error: ", error);
+                alert("Error! " + error);
+            }
+        }
+
+        function getCheckedClasses() {
+            var checkboxes = document.getElementsByName("classCheckbox");
+            var checkboxesChecked = [];
+            
+            for (var i=0; i<checkboxes.length; i++) {
+                if (checkboxes[i].checked) {
+                    checkboxesChecked.push(checkboxes[i].value);
+                }
+            }
+
+            return checkboxesChecked.length > 0 ? checkboxesChecked : null;
+        }
+
+        function enableAltCastingTime() {
+            var selected = document.getElementById("castingSelect").value;
+            if (selected == "other") {
+                document.getElementById("altCastingTimeField").innerHTML = '<input type="text" class="form-control" id="altCastingTime">';
+            } else {
+                document.getElementById("altCastingTimeField").innerHTML = '<input type="text" class="form-control" id="altCastingTime" disabled>';
+            }
+        }
+
+        function fillSourceSelection() {
+            var optionsHTML = `<option selected>Player's Handbook<option>`;
+            for (book in sourceBooks) {
+                optionsHTML += `<option>${sourceBooks[book]}</option>`;
+            }
+            document.getElementById("source").innerHTML = optionsHTML;
+        }
+
+        function generateSchoolRadios() {
+            var radiosHTML = "<p>School of Magic</p>";
+            for (school in schoolsOfMagic) {
+                radiosHTML += `
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="schoolRadio" value="${schoolsOfMagic[school].toLowerCase()}">
+                    <label class="form-check-label" for="${schoolsOfMagic[school].toLowerCase()}">${schoolsOfMagic[school]}</label>
+                </div>
+                `;
+            }
+            radiosHTML += `
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="schoolRadio" id="customSchoolRadio" value="customSchool">
+                <label class="form-check-label" for="customSchool">Other: </label>
+            </div>
+            `;
+            document.getElementById("magicSchoolRadios").innerHTML = radiosHTML;
+        }
+
+        function toggleCustomSchool() {
+            var disabled = '<input class="form-control-inline" type="text" id="customSchoolText" disabled>';
+            var enabled = '<input class="form-control-inline" type="text" id="customSchoolText">';
+        
+            if($("#customSchoolRadio").is(":checked")) {
+                document.getElementById("customSchoolField").innerHTML = enabled;
+            } else {
+                if(!$("#customSchoolText").is(":disabled")) {
+                    document.getElementById("customSchoolField").innerHTML = disabled;
+                }
+            }
+        }
+
+        function generateSpellListChecks() {
+            spellListChecksHTML = "<p>Part of the following spell lists: </p>";
+
+            for (caster in spellLists) {
+                newCheckBox = `
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" name="classCheckbox" value="${spellLists[caster]}" id="on${spellLists[caster]}List">
+                        <label class="form-check-label" for="on${spellLists[caster]}List">${spellLists[caster]}</label>
+                    </div>`;
+
+                spellListChecksHTML += newCheckBox;
+            }
+
+            document.getElementById("schoolChecks").innerHTML = spellListChecksHTML;
+        }
+
+        generateSpellListChecks();
+        generateSchoolRadios();
+        fillSourceSelection();
+    </script>
+</body>
+
+</html>

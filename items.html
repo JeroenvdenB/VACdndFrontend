@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+    <script type="text/javascript" src="config.js"></script>
+</head>
+
+<body>
+    <div id="imports">&nbsp;</div>
+
+    <script type="text/javascript">
+        $(function(){
+            $("#imports").load("imports.html");
+        });
+    </script>
+
+    <!-- Rest of body goes here -->
+    <div class="container pt-4">
+        <div class="row">
+            <div class="col-12">
+                <h1>Item-o-tron 200 Deluxe Edition</h1>
+
+                <div class="col-12 col-sm-2 d-grid">
+                    <a class="btn btn-secondary my-3" data-bs-toggle="collapse" href="#itemExplanation" role="button" aria-expanded="false" aria-controls="collapseExample">
+                      Explanation
+                    </a>
+                </div>
+                <div class="collapse" id="itemExplanation">
+                    <div class="card card-body">
+                        <h2>How does it work?</h2>
+                        <p>
+                            This tool will add a named item to the wiki and update
+                            the Wondrous item list in the correct rarity category.
+                            If a desired source book is not yet on the list, do not
+                            set it as 'Homebrew'. Just send me a message and I'll
+                            add the book to the list!
+                        </p>
+                        <p>
+                            Just like with the spells tool, only copy the relevant info
+                            into the fields. Don't copy headers or bold/cursive parts 
+                            from wikidot. All layout and headers are added automagically.
+                        </p>
+                        <p>
+                            Did you make a mistake? You might be able to fix it by adding
+                            the item again, with the mistake fixed. Otherwise, go to the 
+                            wiki and fix it manually before you continue ;)
+                        </p>
+                        <p>Some notes about the behavior of the app:</p>
+                        <ul>
+                            <li>If you enter an item name that already exists, the item is 
+                                replaced. The name is case and space sensitive. The list 
+                                this item appears in will be updated.
+                            </li>
+                            <li>
+                                Extra item type information (like 'any weapon' or 'on medium armor')
+                                is allowed to remain empty.
+                            </li>
+                            <li>
+                                The page may take a while after you submit the spell. Wait for a popup.
+                                I'm working on a loading screen.
+                            </li>
+                        </ul>
+                        <h2>What field goes where?</h2>
+                        <img src="./Images/Item_fields.jpg" class="w-100">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-12 py-3">
+                <form action="">
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Item name</label>
+                        <input type="text" class="form-control" id="name" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="source" class="form-label">Source material</label>
+                        <select class="form-select" id="source"></select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="type" class="form-label">Item type</label>
+                        <select class="form-select" id="type">
+                            <option>Armor</option>
+                            <option>Potion</option>
+                            <option>Ring</option>
+                            <option>Rod</option>
+                            <option>Scroll</option>
+                            <option>Staff</option>
+                            <option>Wand</option>
+                            <option>Weapon</option>
+                            <option selected>Wondrous Item</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="typeComment" class="form-label">Extra item type information</label>
+                        <input type="text" class="form-control" id="typeComment">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="rarity" class="form-label">Rarity</label>
+                        <select class="form-select" id="rarity">
+                            <option selected>Common</option>
+                            <option>Uncommon</option>
+                            <option>Rare</option>
+                            <option>Very Rare</option>
+                            <option>Legendary</option>
+                            <option>Artifact</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="attunement" class="form-label">Attunement</label> <br>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="attunementRadio" id="attunementFalse" checked onclick="toggleCustomAttunement()">
+                            <label class="form-check-label" for="attunementFalse">Not required</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="attunementRadio" id="attunementTrue" onclick="toggleCustomAttunement()">
+                            <label class="form-check-label" for="attunementFalse">Required</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="attunementRadio" id="attunementCustom" onclick="toggleCustomAttunement()">
+                            <label class="form-check-label" for="attunementCustom">Requires attunement by ...</label>
+                        </div>
+                        <span id="customAttunementField"> <input class="form-control" type="text" id="customAttunement" disabled> </span>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Description</label>
+                        <textarea rows="5" class="form-control" id="description" required></textarea>
+                    </div>
+                </form>
+            </div>
+
+            
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="row">
+            <p class="d-inline-flex gap-1">
+                <button class="btn btn-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#multiCollapseExample1">Syntax Tips</button>
+                <button class="btn btn-primary" type="button" onclick="compileItem()">Submit</button>
+            </p>
+            <div class="row">
+                <div class="collapse" id="multiCollapseExample1">
+                    <div class="card card-body">
+                        <ul>
+                            <li>
+                                To add a link to a spell or item, add the wiki syntax (i.e. <span class="code">[[spell:Mage Armor]]</span>) to immediately create a link to the Mage Armor page.
+                            </li>
+                            <li>
+                                To make bullet points, use two spaces, *, and another space exactly. This only triggers if it's on the start of a new line.
+                                To make a numbered list, use a - (a dash).
+                            </li>
+                            <li>
+                                <u>Underlined</u> is <span class="code">__</span>, <b>bold</b> is <span class="code">**</span>, <em>italics</em> is 
+                                <span class="code">//</span> on either side of the text you want formatted.
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container horizontal-content-divider">
+        &nbsp;
+    </div>
+
+    <div class="container">
+        <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4" style="border-top: 1px solid #b50d0d">
+            <div class="col-md-4 d-flex align-items-center">
+                <span class="mb-3 mb-md-0 text-body-secondary">© 2023 VaC</span>
+            </div>
+        </footer>
+    </div>
+
+
+    <!-- Other JS goes here -->
+    <script>
+        fillSourceSelection();
+
+        function fillSourceSelection() {
+            var optionsHTML = `<option selected>Player's Handbook<option>`;
+            for (book in sourceBooks) {
+                optionsHTML += `<option>${sourceBooks[book]}</option>`;
+            }
+            document.getElementById("source").innerHTML = optionsHTML;
+        }
+
+        function toggleCustomAttunement() {
+            var disabled = '<input class="form-control" type="text" id="customAttunement" disabled>';
+            var enabled = '<input class="form-control" type="text" id="customAttunement">';
+        
+            if($("#attunementCustom").is(":checked")) {
+                document.getElementById("customAttunementField").innerHTML = enabled;
+            } else {
+                if(!$("#attunementCustom").is(":disabled")) {
+                    document.getElementById("customAttunementField").innerHTML = disabled;
+                }
+            }
+        }
+
+        function compileItem() {
+            var item = {};
+            item.name = document.getElementById("name").value;
+            item.source = document.getElementById("source").value;
+            item.itemType = document.getElementById("type").value;
+            item.typeComment = document.getElementById("typeComment").value;
+            item.rarity = document.getElementById("rarity").value;
+            
+            if($("#attunementFalse").is(":checked")) {
+                item.attunement = false;
+                item.attunementComment = "";
+            } else if($("#attunementTrue").is(":checked")) {
+                item.attunement = true;
+                item.attunementComment = "";
+            } else if($("#attunementCustom").is(":checked")) {
+                item.attunement = true;
+                item.attunementComment = document.getElementById("customAttunement").value;
+            }
+
+            item.description = document.getElementById("description").value;
+
+            console.log(item);
+
+            sendItem(item);
+        }
+
+        async function sendItem(item) {
+            console.log("Entered sendItem function");
+            var response = await fetch(url + "addItem", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(item),
+            });
+
+            var result = await response;
+            if (result.status == 200) {
+                alert("Item was successfully sent.");
+                window.location.reload();
+            } else {
+                alert("Unknown error while sending the item. Check all required fields were filled. If the error persists, contact system admin.");
+            }
+        }
+
+    </script>
+
+</body>
+
+</html>
