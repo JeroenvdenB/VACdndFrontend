@@ -18,6 +18,7 @@ var sourceBooks = [
     "Eberron Rising from the Last War",
     "Explorer's Guide to Wildemount",
     "Fizban's Treasury of Dragon",
+    "Fizban's Vault of Draconic Secrets",
     "Ghosts of Saltmarsh",
     "Guildmaster's Guide to Ravnica",
     "Hoard of the Dragon Queen",
