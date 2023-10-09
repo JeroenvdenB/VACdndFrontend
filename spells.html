@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
-    <script type="text/javascript" src="config.js"></script>
 </head>
 
 <body>
@@ -17,8 +16,6 @@
     </script>
 
     <!-- Rest of body goes here -->
-
-
 <div class="container py-4">
     <div class="row">
         <div class="col-12">
@@ -190,8 +187,8 @@
 </div>
 
     <!-- Other JS goes here -->
-    <script type="text/javascript"></script>
-    <script>
+    <script type="text/javascript">
+
         function compileSpell() {
             //Yes I know the form can send things. No, I can't figure it out for my endpoint.
             //Especially not because there are optional fields (see if statements below). 
@@ -334,9 +331,15 @@
             document.getElementById("schoolChecks").innerHTML = spellListChecksHTML;
         }
 
-        generateSpellListChecks();
-        generateSchoolRadios();
-        fillSourceSelection();
+        //The page needs to fully load imports.html and inside that config.js BEFORE it tries
+        //to address global variables inside config.js. This ensures the page is fully loaded
+        //before we fire the content-filling functions.
+        window.addEventListener("load", (event) => {
+            generateSpellListChecks();
+            generateSchoolRadios();
+            fillSourceSelection();
+        });
+
     </script>
 </body>
 
