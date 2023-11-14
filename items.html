@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
-    <script type="text/javascript" src="config.js"></script>
 </head>
 
 <body>
@@ -186,8 +185,7 @@
 
 
     <!-- Other JS goes here -->
-    <script>
-        fillSourceSelection();
+    <script type="text/javascript">
 
         function fillSourceSelection() {
             var optionsHTML = `<option selected>Player's Handbook<option>`;
@@ -254,6 +252,13 @@
                 alert("Unknown error while sending the item. Check all required fields were filled. If the error persists, contact system admin.");
             }
         }
+
+        //The page needs to fully load imports.html and inside that config.js BEFORE it tries
+        //to address global variables inside config.js. This ensures the page is fully loaded
+        //before we fire the content-filling functions.
+        window.addEventListener("load", (event) => {
+            fillSourceSelection();
+        });        
 
     </script>
 
