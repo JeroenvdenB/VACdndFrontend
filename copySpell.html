@@ -8,11 +8,11 @@
 
     async function sendText() {
         var input = document.getElementById("inputBox").value;
-        console.log("sending " +input);
+        console.log(input);
 
         var response = await fetch(url + "pastedSpell", {
             method: "POST",
-            body: JSON.stringify(input),
+            body: input,
         });
         var text = await response.text()
         console.log(text);
