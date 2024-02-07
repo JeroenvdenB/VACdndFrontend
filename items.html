@@ -20,50 +20,52 @@
         <div class="row">
             <div class="col-12">
                 <h1>Item-o-tron 200 Deluxe Edition</h1>
-
-                <div class="col-12 col-sm-2 d-grid">
-                    <a class="btn btn-secondary my-3" data-bs-toggle="collapse" href="#itemExplanation" role="button" aria-expanded="false" aria-controls="collapseExample">
-                      Explanation
-                    </a>
-                </div>
-                <div class="collapse" id="itemExplanation">
-                    <div class="card card-body">
-                        <h2>How does it work?</h2>
-                        <p>
-                            This tool will add a named item to the wiki and update
-                            the Wondrous item list in the correct rarity category.
-                            If a desired source book is not yet on the list, do not
-                            set it as 'Homebrew'. Just send me a message and I'll
-                            add the book to the list!
-                        </p>
-                        <p>
-                            Just like with the spells tool, only copy the relevant info
-                            into the fields. Don't copy headers or bold/cursive parts 
-                            from wikidot. All layout and headers are added automagically.
-                        </p>
-                        <p>
-                            Did you make a mistake? You might be able to fix it by adding
-                            the item again, with the mistake fixed. Otherwise, go to the 
-                            wiki and fix it manually before you continue ;)
-                        </p>
-                        <p>Some notes about the behavior of the app:</p>
-                        <ul>
-                            <li>If you enter an item name that already exists, the item is 
-                                replaced. The name is case and space sensitive. The list 
-                                this item appears in will be updated.
-                            </li>
-                            <li>
-                                Extra item type information (like 'any weapon' or 'on medium armor')
-                                is allowed to remain empty.
-                            </li>
-                            <li>
-                                The page may take a while after you submit the spell. Wait for a popup.
-                                I'm working on a loading screen.
-                            </li>
-                        </ul>
-                        <h2>What field goes where?</h2>
-                        <img src="./Images/Item_fields.jpg" class="w-100">
-                    </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12 col-sm-3 d-grid"> 
+                <a class="btn btn-primary my-3" role="button" href="./items.html">
+                    Clear Form
+                </a>
+            </div>
+            <div class="col-12 col-sm-3 d-grid">
+                <a class="btn btn-secondary my-3" data-bs-toggle="collapse" href="#itemExplanation" role="button">
+                    Explanation
+                </a>
+            </div>
+            <div class="collapse" id="itemExplanation">
+                <div class="card card-body">
+                    <h2>How does it work?</h2>
+                    <p>
+                        This tool will add a named item to the wiki and update
+                        the Wondrous item list in the correct rarity category.
+                        If a desired source book is not yet on the list, do not
+                        set it as 'Homebrew'. Just send me a message and I'll
+                        add the book to the list!
+                    </p>
+                    <p>
+                        Just like with the spells tool, only copy the relevant info
+                        into the fields. Don't copy headers or bold/cursive parts 
+                        from wikidot. All layout and headers are added automagically.
+                    </p>
+                    <p>
+                        Did you make a mistake? You might be able to fix it by adding
+                        the item again, with the mistake fixed. Otherwise, go to the 
+                        wiki and fix it manually before you continue ;)
+                    </p>
+                    <p>Some notes about the behavior of the app:</p>
+                    <ul>
+                        <li>If you enter an item name that already exists, the item is 
+                            replaced. The name is case and space sensitive. The list 
+                            this item appears in will be updated.
+                        </li>
+                        <li>
+                            Extra item type information (like 'any weapon' or 'on medium armor')
+                            is allowed to remain empty.
+                        </li>
+                    </ul>
+                    <h2>What field goes where?</h2>
+                    <img src="./Images/Item_fields.jpg" class="w-100">
                 </div>
             </div>
         </div>
@@ -147,7 +149,7 @@
         <div class="row">
             <p class="d-inline-flex gap-1">
                 <button class="btn btn-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#multiCollapseExample1">Syntax Tips</button>
-                <button class="btn btn-primary" type="button" onclick="compileItem()">Submit</button>
+                <button class="btn btn-primary" type="button" onclick="modalControl()">Submit</button>
             </p>
             <div class="row">
                 <div class="collapse" id="multiCollapseExample1">
@@ -186,6 +188,32 @@
 
     <!-- Other JS goes here -->
     <script type="text/javascript">
+
+        /* Modal control is a little weird.
+        Hiding the modal cannot be done before it's finished showing on screen.
+        The whole function, however, might be too fast for the modal to finish appearing before it calls the hide() method.
+        The workaround is waiting for event triggers 'shown' and 'hidden'.
+        Could I do this with async functions instead? */
+
+        function modalControl() {
+            var myModal = new bootstrap.Modal(document.getElementById('loadingModal'), {
+                keyboard: false
+            });
+
+            document.getElementById('loadingModal').addEventListener('shown.bs.modal', event => {
+                compileItem();
+            })
+
+            document.getElementById('loadingModal').addEventListener('hidden.bs.modal', event => {
+                // Reset the modal content to its original loading screen
+                document.getElementById('loadingModalContent').innerHTML = `
+                    <div class="spinner my-3"></div>
+                    <div class="loadingText" id="loadingModalText"><p>Connecting to the server. This may take up to two minutes.</p></div>
+                    `
+            })
+
+            myModal.show();
+        }
 
         function fillSourceSelection() {
             var optionsHTML = `<option selected>Player's Handbook<option>`;
@@ -246,10 +274,9 @@
 
             var result = await response;
             if (result.status == 200) {
-                alert("Item was successfully sent.");
-                window.location.reload();
+                document.getElementById('loadingModalContent').innerHTML = "Item uploaded successfully!";
             } else {
-                alert("Unknown error while sending the item. Check all required fields were filled. If the error persists, contact system admin.");
+                document.getElementById('loadingModalContent').innerHTML = "Unknown error while sending the item. Check all required fields were filled. If the error persists, contact system admin."
             }
         }
 

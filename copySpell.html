@@ -1,20 +1,106 @@
-<textarea id="inputBox">Default</textarea>
-<button onclick="sendText()">Send</button>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+</head>
 
-<script type="text/javascript" src="config.js"></script>
+<body>
+    <div id="imports">&nbsp;</div>
 
-<script>
-    
-
-    async function sendText() {
-        var input = document.getElementById("inputBox").value;
-        console.log(input);
-
-        var response = await fetch(url + "pastedSpell", {
-            method: "POST",
-            body: input,
+    <script type="text/javascript">
+        $(function(){
+            $("#imports").load("imports.html");
         });
-        var text = await response.text()
-        console.log(text);
-    }
-</script>
+    </script>
+
+    <!-- Rest of body goes here -->
+    <div class="container">
+        <div class="row">
+            <div class="col-12 col-lg-6 py-3">
+                <textarea id="inputBox" autocomplete="off" style="width:100%" placeholder="Paste wikidot spell here" rows="12"></textarea>
+            </div>
+            <div class="col-12 col-lg-6 py-3">
+                <p> Take care to copy and past the entire spell. Nothing more, nothing less.</p>
+                <p> Format tables manually with the <a href="./tableformat.html">table tool</a></p>
+                <p> Add bullet points manually by typing <span class="code">[space][space]*[space]</span> at the start of a line.</p>
+                <p> Link to other spells like <span class="code">[[spell:<em>spell_name</em>]]</span>.</p>
+                <p> See the <a href="./tools.html">style guide</a> for more info. </p>
+                <button class="btn btn-primary" onclick="modalControl()">Submit</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4" style="border-top: 1px solid #b50d0d">
+            <div class="col-md-4 d-flex align-items-center">
+                <span class="mb-3 mb-md-0 text-body-secondary">© 2023 VaC</span>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Other JS goes here -->
+    
+    <script>
+        /* Modal control is a little weird.
+        Hiding the modal cannot be done before it's finished showing on screen.
+        The whole function, however, might be too fast for the modal to finish appearing before it calls the hide() method.
+        The workaround is waiting for event triggers 'shown' and 'hidden'.
+        Could I do this with async functions instead? */
+
+        function modalControl() {
+            var myModal = new bootstrap.Modal(document.getElementById('loadingModal'), {
+                keyboard: false
+            });
+
+            document.getElementById('loadingModal').addEventListener('shown.bs.modal', event => {
+                sendText(myModal);
+            })
+
+            document.getElementById('loadingModal').addEventListener('hidden.bs.modal', event => {
+                window.location.reload();
+            })
+
+            myModal.show();
+        }
+
+        async function sendText(modal) {
+            var input = document.getElementById("inputBox").value;
+            console.log("sending spell as: \n" + input);
+
+            try {
+                if (input.length < 30) { // Throw error if the content of the field is too small to be a spell
+                    throw "No spell text detected"
+                }
+                if (input.substring(0, input.indexOf("Casting")).includes("/")) { // Slashes will ruin the wiki file structure. Not allowed in spell titles.
+                    throw "No forward slash (/) allowed in spell title"
+                }
+                
+                // POST-request to endpoint. Just input in the body, it's a single string.
+                // The endpoint parses the string into a spell object
+                var response = await fetch(url + "pastedSpell", {
+                    method: "POST",
+                    body: input,
+                });
+
+                var result = await response;
+                if (result.status == 200) {
+                    document.getElementById('loadingModalContent').innerHTML = "<p>Spell uploaded succesfully!</p>";
+                } else {
+                    document.getElementById('loadingModalContent').innerHTML = "<p>Unknown error while submitting the spell :(</p>";
+                }
+            } catch (error) {
+                console.error("Error: ", error);
+                var errorHTML = '<p>Error: ' +
+                    error +
+                    '</p>';
+                document.getElementById('loadingModalContent').innerHTML = errorHTML;
+            }
+        }
+    </script>
+
+</body>
+
+</html>
+

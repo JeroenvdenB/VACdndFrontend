@@ -20,48 +20,54 @@
     <div class="row">
         <div class="col-12">
             <h1>Spellinator-9000</h1>
-
-            <div class="col-12 col-sm-2 d-grid">
-                <a class="btn btn-secondary my-3" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
-                  Explanation
-                </a>
-            </div>
-                <div class="collapse" id="collapseExample">
-                    <div class="card card-body">
-                        <p>
-                            This form will add a spell to the wiki and update any 
-                            spell list it occurs in. If a desired source book is not
-                            yet in the list, send a request and I'll add it. If you're
-                            copying from wikidot, do not copy the bold or cursive stuff
-                            (like 'at higher levels'). Those headers are added 
-                            automagically.
-                        </p>
-                        <p>
-                            Did you make a mistake? You might be able to fix it by adding
-                            the spell again, with the mistake fixed. See the behavior 
-                            explained below. Otherwise, go to the wiki and fix it manually
-                            before you continue ;)
-                        </p>
-                        <p>Some notes about the behavior of the app:</p>
-                        <ul>
-                            <li>If you enter a spell name that already exists, the spell is 
-                                replaced. The name is case and space sensitive. All lists
-                                that the spell appears in will be updated.
-                            </li>
-                            <li>If you leave out the school or class, the form will yell at you.</li>
-                            <li>If you leave 'higher levels' empty, the code behind all this
-                                becomes mad at you. If there are no higher levels, enter "N/A".
-                            </li>
-                            <li>
-                                The page may take a while after you submit the spell. Wait for a popup.
-                                I'm working on a loading screen.
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-
         </div>
     </div>
+    <div class="row">
+        <div class="col-12 col-sm-3 d-grid"> 
+            <a class="btn btn-primary my-3" role="button" href="./spells.html">
+                Clear Form
+            </a>
+        </div>
+        <div class="col-12 col-sm-3 d-grid">
+            <a class="btn btn-secondary my-3" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+                Explanation
+            </a>
+        </div>
+        <div class="collapse" id="collapseExample">
+            <div class="card card-body">
+                <p>
+                    ALWAYS check your work on the wiki after uploading!
+                </p>
+                <p>
+                    This form will add a spell to the wiki and update any 
+                    spell list it occurs in. If a desired source book is not
+                    yet in the list, send a request and I'll add it. If you're
+                    copying from wikidot, do not copy the bold or cursive stuff
+                    (like 'at higher levels'). Those headers are added 
+                    automagically.
+                </p>
+                <p>
+                    Did you make a mistake? You might be able to fix it by adding
+                    the spell again, with the mistake fixed. See the behavior 
+                    explained below. Otherwise, go to the wiki and fix it manually
+                    before you continue ;)
+                </p>
+                <p>Some notes about the behavior of the app:</p>
+                <ul>
+                    <li>If you enter a spell name that already exists, the spell is 
+                        replaced. The name is case and space sensitive. All lists
+                        that the spell appears in will be updated.
+                    </li>
+                    <li>
+                        Special characters besides underscore are not allowed in spell names.
+                    </li>
+                    <li>If you leave out the school or class, the form will yell at you.</li>
+                    <li>If you leave 'higher levels' empty, the code behind all this
+                        becomes mad at you. If there are no higher levels, enter "N/A".
+                    </li>
+                </ul>
+            </div>
+        </div>
     <div class="row">
         <div class="col-12 py-3">
             <form action="">
@@ -172,7 +178,7 @@
         </div>
 
         <div class="col-12 d-grid">
-            <button class="btn btn-primary" onclick="compileSpell()">Submit</button>
+            <button class="btn btn-primary" onclick="modalControl()">Submit</button>
         </div>
 
     </div>
@@ -188,8 +194,33 @@
 
     <!-- Other JS goes here -->
     <script type="text/javascript">
+        /* Modal control is a little weird.
+        Hiding the modal cannot be done before it's finished showing on screen.
+        The whole function, however, might be too fast for the modal to finish appearing before it calls the hide() method.
+        The workaround is waiting for event triggers 'shown' and 'hidden'.
+        Could I do this with async functions instead? */
 
-        function compileSpell() {
+        function modalControl() {
+            var myModal = new bootstrap.Modal(document.getElementById('loadingModal'), {
+                keyboard: false
+            });
+
+            document.getElementById('loadingModal').addEventListener('shown.bs.modal', event => {
+                compileSpell(myModal);
+            })
+
+            document.getElementById('loadingModal').addEventListener('hidden.bs.modal', event => {
+                // Reset the modal content to its original loading screen
+                document.getElementById('loadingModalContent').innerHTML = `
+                    <div class="spinner my-3"></div>
+                    <div class="loadingText" id="loadingModalText"><p>Connecting to the server. This may take up to two minutes.</p></div>
+                    `
+            })
+
+            myModal.show();
+        }
+
+        function compileSpell(modal) {
             //Yes I know the form can send things. No, I can't figure it out for my endpoint.
             //Especially not because there are optional fields (see if statements below). 
             var spell = {};
@@ -220,10 +251,10 @@
             spell.lists = getCheckedClasses();
             spell.ritual = document.getElementById("ritualSelect").value;
 
-            sendSpell(spell);
+            sendSpell(spell, modal);
         }
 
-        async function sendSpell(spell) {
+        async function sendSpell(spell, modal) {
         
             try {
                 if (spell.lists == null) {
@@ -241,15 +272,18 @@
                 });
 
                 var result = await response;
+                var clearFormButtonHTML = '<button class="btn">Clear Form</button>'
                 if (result.status == 200) {
-                    alert("Spell was successfully sent.");
-                    window.location.reload();
+                    document.getElementById('loadingModalContent').innerHTML = '<p>Spell uploaded successfully!</p>'
                 } else {
-                    alert("Unknown error when sending the spell. Contact system administrator.");
+                    document.getElementById('loadingModalContent').innerHTML = '<p>Unknown error while submitting the spell :(</p>'
                 }
             } catch (error) {
                 console.error("Error: ", error);
-                alert("Error! " + error);
+                var errorHTML = '<p>Error: ' +
+                    error +
+                    '</p>';
+                document.getElementById('loadingModalContent').innerHTML = errorHTML;
             }
         }
 
