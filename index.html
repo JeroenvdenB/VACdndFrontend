@@ -27,8 +27,8 @@
           <div class="col-md-10 mx-auto col-lg-5">
             <form class="p-4 p-md-5 border rounded-3 bg-body-tertiary">
               <div class="form-floating mb-3">
-                <input type="email" class="form-control" id="usernameInput" name="username" placeholder="name@example.com" autocomplete="on" style="cursor: text;">
-                <label for="usernameInput">Username</label>
+                <input type="email" class="form-control" id="emailInput" name="email" placeholder="name@example.com" autocomplete="on" style="cursor: text;">
+                <label for="emailInput">Email</label>
               </div>
               <div class="form-floating mb-3">
                 <input type="password" class="form-control" id="passwordInput" name="password" placeholder="Password" autocomplete="on" style="cursor: text;">
@@ -99,13 +99,13 @@
         async function loginUser() {
 
             var user = {};
-            user.username = document.getElementById("usernameInput").value;
+            user.email = document.getElementById("emailInput").value;
             user.password = document.getElementById("passwordInput").value;
 
             console.log(user);
 
             try {
-                var response = await fetch(url + "userAuth", {
+                var response = await fetch(url + "login", {
                     method:"POST",
                     headers: {
                         "Content-Type": "application/json",

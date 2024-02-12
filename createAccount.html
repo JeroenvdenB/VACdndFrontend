@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+</head>
+
+<body>
+    <div id="imports">&nbsp;</div>
+
+    <script type="text/javascript">
+        $(function(){
+            $("#imports").load("imports.html");
+        });
+    </script>
+
+    <!-- Rest of body goes here -->
+<div class="container">
+    <div class="row py-4">
+        <div class="col-md-10 mx-auto col-lg-5">
+            <!-- <form class="p-4 p-md-5 border rounded-3 bg-body-tertiary" action=""> -->
+            <div class="form-floating mb-3">
+                <input type="email" class="form-control" id="emailInput" name="email" placeholder="name@example.com" autocomplete="on" style="cursor: text;">
+                <label for="emailInput">Email</label>
+            </div>
+            <div class="form-floating mb-3">
+                <input type="password" class="form-control" id="passwordInput" name="password" placeholder="Password" autocomplete="on" style="cursor: text;">
+                <label for="passwordInput">Password</label>
+            </div>
+            <div class="form-floating mb-3">
+                <input type="text" class="form-control" id="inviteKeyInput" name="inviteKey" placeholder="inviteKey" autocomplete="on" style="cursor: text;">
+                <label for="inviteKeyInput">Invite Key</label>
+            </div>
+            <button class="w-100 btn btn-lg btn-primary" onclick="submitUser()">Create Account</button>
+            <button class="btn btn-success" onclick="login()">Login</button>
+            <!-- </form> -->
+        </div>
+    </div>
+</div>
+
+
+    <!-- Footer -->
+    <div class="container">
+        <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4" style="border-top: 1px solid #b50d0d">
+            <div class="col-md-4 d-flex align-items-center">
+                <span class="mb-3 mb-md-0 text-body-secondary">© 2023 VaC</span>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Other JS goes here -->
+<script>
+    async function submitUser() {
+        var userRegistrationDto = {};
+        userRegistrationDto.email = document.getElementById("emailInput").value;
+        userRegistrationDto.password = document.getElementById("passwordInput").value;
+        userRegistrationDto.registrationKey = document.getElementById("inviteKeyInput").value;
+
+        console.log(userRegistrationDto);
+
+        try {
+            var response = await fetch(url + "addNewUser", {
+                method:"POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(userRegistrationDto),
+            });
+
+            var result = await response;
+            var resultJSON = await response.text();
+            console.log(resultJSON);
+            if (result.status == 200) {
+                alert("user data was sent");
+            } else {
+                alert("Unknown problem when sending login data. Contact system admin.");
+            }
+        } catch (error) {
+            console.error("Error: ", error);
+            alert("An error occured: ", error);
+        }
+    }
+
+    async function login() {
+        var user = {};
+        user.email = document.getElementById("emailInput").value;
+        user.password = document.getElementById("passwordInput").value;
+
+        console.log(user);
+
+        try {
+            var response = await fetch(url + "login", {
+                method:"POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(user),
+            });
+
+            var result = await response;
+            if (result.status == 200) {
+                console.log(await response.json())
+                alert("user data was sent");
+            } else {
+                alert("A problem occurred");
+            }
+        } catch (error) {
+            console.error("Error: ", error);
+            alert("An error occured: ", error);
+        }
+}
+</script>
+</body>
+
+</html>
