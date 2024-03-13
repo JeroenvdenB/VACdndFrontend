@@ -19,22 +19,25 @@
 <div class="container">
     <div class="row py-4">
         <div class="col-md-10 mx-auto col-lg-5">
-            <!-- <form class="p-4 p-md-5 border rounded-3 bg-body-tertiary" action=""> -->
+            <form class="p-4 p-md-5 border rounded-3 bg-body-tertiary" onsubmit="submitUser()" action="javascript:void(0);">
             <div class="form-floating mb-3">
-                <input type="email" class="form-control" id="emailInput" name="email" placeholder="name@example.com" autocomplete="on" style="cursor: text;">
+                <input required type="email" class="form-control" id="emailInput" name="email" placeholder="name@example.com" autocomplete="on" style="cursor: text;">
                 <label for="emailInput">Email</label>
             </div>
             <div class="form-floating mb-3">
-                <input type="password" class="form-control" id="passwordInput" name="password" placeholder="Password" autocomplete="on" style="cursor: text;">
+                <input required type="password" class="form-control" id="passwordInput" name="password" placeholder="Password" autocomplete="on" style="cursor: text;">
                 <label for="passwordInput">Password</label>
             </div>
             <div class="form-floating mb-3">
-                <input type="text" class="form-control" id="inviteKeyInput" name="inviteKey" placeholder="inviteKey" autocomplete="on" style="cursor: text;">
+                <input required type="text" class="form-control" id="inviteKeyInput" name="inviteKey" placeholder="inviteKey" autocomplete="on" style="cursor: text;">
                 <label for="inviteKeyInput">Invite Key</label>
             </div>
-            <button class="w-100 btn btn-lg btn-primary" onclick="submitUser()">Create Account</button>
-            <button class="btn btn-success" onclick="login()">Login</button>
-            <!-- </form> -->
+            <button class="w-100 btn btn-lg btn-primary" type="submit">Create Account</button>
+            <div class="row loadingModalContent" style="display:none" id="spinner">
+                <div class="spinner my-3"></div>
+                <div class="loadingText" id="loadingModalText"><p>Connecting to the server. This may take up to two minutes.</p></div>
+            </div>
+            </form>
         </div>
     </div>
 </div>
@@ -51,13 +54,33 @@
 
     <!-- Other JS goes here -->
 <script>
+    (() => {
+        'use strict'
+
+        // Fetch all the forms we want to apply custom Bootstrap validation styles to
+        const forms = document.querySelectorAll('.needs-validation')
+
+        // Loop over them and prevent submission
+        Array.from(forms).forEach(form => {
+            form.addEventListener('submit', event => {
+            if (!form.checkValidity()) {
+                event.preventDefault()
+                event.stopPropagation()
+            }
+
+            form.classList.add('was-validated')
+            }, false)
+        })
+    })()
+
     async function submitUser() {
+        // Display the spinner/loading symbol
+        $("#spinner").show();
+
         var userRegistrationDto = {};
         userRegistrationDto.email = document.getElementById("emailInput").value;
         userRegistrationDto.password = document.getElementById("passwordInput").value;
         userRegistrationDto.registrationKey = document.getElementById("inviteKeyInput").value;
-
-        console.log(userRegistrationDto);
 
         try {
             var response = await fetch(url + "addNewUser", {
@@ -68,48 +91,27 @@
                 body: JSON.stringify(userRegistrationDto),
             });
 
-            var result = await response;
-            var resultJSON = await response.text();
-            console.log(resultJSON);
-            if (result.status == 200) {
-                alert("user data was sent");
+            if (response.ok) {
+                var responseText = await response.text();
+                console.log(responseText);
+                alert(responseText);
+                if (responseText.includes("registred")) {
+                    window.location = "./index.html";
+                }
             } else {
-                alert("Unknown problem when sending login data. Contact system admin.");
+                var json = await response.json();
+                console.log(json.message);
+                alert("HTTP-Error: " + response.status + ": " + json.message);
             }
         } catch (error) {
-            console.error("Error: ", error);
-            alert("An error occured: ", error);
+            console.error("Error in sending request: ", error);
+            alert("An error occured in sending the request: ", error);
         }
+
+        // Hide the spinner again
+        $("#spinner").hide();
     }
 
-    async function login() {
-        var user = {};
-        user.email = document.getElementById("emailInput").value;
-        user.password = document.getElementById("passwordInput").value;
-
-        console.log(user);
-
-        try {
-            var response = await fetch(url + "login", {
-                method:"POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(user),
-            });
-
-            var result = await response;
-            if (result.status == 200) {
-                console.log(await response.json())
-                alert("user data was sent");
-            } else {
-                alert("A problem occurred");
-            }
-        } catch (error) {
-            console.error("Error: ", error);
-            alert("An error occured: ", error);
-        }
-}
 </script>
 </body>
 

@@ -20,27 +20,38 @@
         <div class="row align-items-center g-lg-5 py-5">
           <div class="col-lg-7 text-center text-lg-start">
             <h1 class="display-4 fw-bold lh-1 text-body-emphasis mb-3">Roll for initiative!</h1>
-            <p class="col-lg-10 fs-4">Welcome to VacDnD, the last DnD website I'm ever going to need.
+            <p class="col-lg-10 fs-4">Welcome to VacDnD, the last DnD website we're ever going to need.
                 This cute little project features a wiki, tools to fill said wiki, and a combat tracker.
                 Sadly the wiki and accompanying tools are closed to the public... sorry!
           </div>
-          <div class="col-md-10 mx-auto col-lg-5">
-            <form class="p-4 p-md-5 border rounded-3 bg-body-tertiary">
+          <div class="col-md-10 mx-auto col-lg-5" id="loginField">
+            <form class="p-4 p-md-5 border rounded-3 bg-body-tertiary" action="javascript:void(0);" onsubmit="login()">
               <div class="form-floating mb-3">
-                <input type="email" class="form-control" id="emailInput" name="email" placeholder="name@example.com" autocomplete="on" style="cursor: text;">
+                <input type="email" class="form-control" id="emailInput" name="email" placeholder="name@example.com" autocomplete="on" style="cursor: text;" required>
                 <label for="emailInput">Email</label>
               </div>
               <div class="form-floating mb-3">
-                <input type="password" class="form-control" id="passwordInput" name="password" placeholder="Password" autocomplete="on" style="cursor: text;">
+                <input type="password" class="form-control" id="passwordInput" name="password" placeholder="Password" autocomplete="on" style="cursor: text;" required>
                 <label for="passwordInput">Password</label>
               </div>
               <div class="checkbox mb-3">
                 <label>
-                  <input type="checkbox" value="remember-me" checked disabled> Remember me
+                  <input type="checkbox" value="remember-me" unchecked disabled> Remember me
                 </label>
               </div>
-              <button class="w-100 btn btn-lg btn-primary" onclick="loginUser()">Login</button>
+              <button class="w-100 btn btn-lg btn-primary" type="submit">Login</button>
+              <a href="./createAccount.html">Or create an account</a>
+              <div class="row loadingModalContent" style="display:none" id="spinner">
+                <div class="spinner my-3"></div>
+                <div class="loadingText" id="loadingModalText"><p>Connecting to the server. This may take up to two minutes.</p></div>
+              </div>
             </form>
+          </div>
+          <div class="col-md-10 mx-auto col-lg-5" id="loggedInMessage" style="display:none;">
+            <div class="p-4 p-md-5 border rounded-3 bg-body-tertiary">
+                <p id="welcomeMessage">Placeholder</p>
+                <button class="w-100 btn btn-secondary">Logout</button>
+            </div>
           </div>
         </div>
       </div>
@@ -96,36 +107,63 @@
 
     <!-- Other JS goes here -->
     <script>
-        async function loginUser() {
+    async function login() {
+        // Display the spinner/loading symbol
+        $("#spinner").show();
 
-            var user = {};
-            user.email = document.getElementById("emailInput").value;
-            user.password = document.getElementById("passwordInput").value;
+        var user = {};
+        user.email = document.getElementById("emailInput").value;
+        user.password = document.getElementById("passwordInput").value;
 
-            console.log(user);
+        console.log(user);
 
-            try {
-                var response = await fetch(url + "login", {
-                    method:"POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify(user),
-                });
+        try {
+            var response = await fetch(url + "login", {
+                method:"POST",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(user),
+            });
 
-                var result = await response;
-                if (result.status == 200) {
-                    alert("user data was sent");
-                } else {
-                    alert("Unknown problem when sending login data. Contact system admin.");
-                }
-            } catch (error) {
-                console.error("Error: ", error);
-                alert("An error occured: ", error);
+            if (response.ok) {
+                var responseText = await response.text(); // The response is the email that logged in
+                loginRebuild(responseText);
+            } else {
+                var json = await response.json();
+                console.log(json.message);
+                alert("HTTP-Error: " + response.status + ": " + json.message);
             }
+        } catch (error) {
+            console.error("Error in sending request: ", error);
+            alert("An error occured in sending the request: ", error);
         }
 
-    </script>
+        // Hide the spinner again
+        $("#spinner").hide();
+    }
+
+    function loginRebuild(username) {
+        // Removes login form and turn a message and logout button visible
+        $("#loginField").hide();
+        $("#loggedInMessage").show();
+        $("#welcomeMessage").text("Welcome, " + username + "!")
+    }
+
+    function isLoggedIn() {
+        // Check if a username cookie is present
+        // https://www.w3schools.com/js/js_cookies.asp
+        // If it is, read the cookie and call loginRebuild(username)
+    }
+
+    async function logout() {
+        // Use the session token in a fetch request to delete the token from the backend
+        // The backend will respond by deleting the session cookie and the username cookie
+    }
+   
+
+</script>
 </body>
 
 </html>
